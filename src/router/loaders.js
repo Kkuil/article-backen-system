@@ -3,12 +3,16 @@ import { message } from "antd"
 
 export default {
     async AuthLoader() {
-        const { status, msg } = await auth()
+        const { status, msg, admin } = await auth()
         if(status == 400) {
             message.error(msg)
+            return {
+                status
+            }
         }
         return {
-            status
+            status,
+            admin
         }
     }
 }

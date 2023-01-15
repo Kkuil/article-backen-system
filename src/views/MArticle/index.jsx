@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useLoaderData, Outlet, useLocation } from "react-router-dom"
-import { Breadcrumb, Layout, Menu, theme } from "antd"
+import { Layout, Menu, theme, Avatar } from "antd"
 import { HeatMapOutlined, UserOutlined, UserSwitchOutlined, EditOutlined } from "@ant-design/icons"
+import { connect } from "react-redux"
+import styled from "styled-components"
+import _ from "lodash"
+
+import { modify } from "@/store/modules/admin"
+
+const StyleHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+`
 
 const { Header, Content, Footer, Sider } = Layout
 const items = [
@@ -52,21 +65,43 @@ const items = [
         ]
     }
 ]
-export default function MArticle() {
-    const [collapsed, setCollapsed] = useState(false)
+function MArticle({ admin_info, modify }) {
     const navigateTo = useNavigate()
     const { pathname } = useLocation()
-    const { status } = useLoaderData()
+    const { status, admin } = useLoaderData()
+    const [collapsed, setCollapsed] = useState(false)
+    // 默认选中的项
+    const [defaultKey] = useState("/" + pathname.split("/").slice(2).join("/"))
+    // 默认展开的项
+    const [openKey] = useState("/" + pathname.split("/")[2])
+    // 权限管理
     useEffect(() => {
         if (status == 400) {
             navigateTo("/login")
+            return
         }
+        modify({ admin })
     }, [status])
+    // 重定向
     useEffect(() => {
-        if(pathname == "/MArticle") {
+        if (pathname == "/MArticle") {
             navigateTo("/mArticle/main")
+            return
         }
     }, [pathname])
+    // 监听页面尺寸变化
+    useEffect(() => {
+        window.onresize = _.throttle(function (e) {
+            if (e.target.outerWidth <= 750) {
+                setCollapsed(true)
+            } else {
+                setCollapsed(false)
+            }
+        }, 1000)
+        return () => {
+            window.onresize = null
+        }
+    }, [])
     const {
         token: { colorBgContainer },
     } = theme.useToken()
@@ -79,7 +114,16 @@ export default function MArticle() {
                 minHeight: "100vh",
             }}
         >
-            <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <Sider
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+                style={{
+                    position: "sticky",
+                    top: 0,
+                    height: "100vh"
+                }}
+            >
                 <div
                     style={{
                         height: 45,
@@ -97,10 +141,16 @@ export default function MArticle() {
                 </div>
                 <Menu
                     theme="dark"
-                    defaultSelectedKeys={["/main"]}
+                    defaultSelectedKeys={[defaultKey]}
+                    // selectedKeys={[defaultKey]}
+                    // openKeys={[openKey]}
+                    defaultOpenKeys={[openKey]}
                     mode="inline"
                     items={items}
                     onSelect={selected}
+                    onClick={({ key }) => {
+                        console.log(key)
+                    }}
                 />
             </Sider>
             <Layout className="site-layout">
@@ -109,24 +159,56 @@ export default function MArticle() {
                         padding: 0,
                         background: colorBgContainer,
                     }}
-                />
+                >
+                    <StyleHeader>
+                        <div className="left">123</div>
+                        <div className="center">123</div>
+                        <div
+                            className="right"
+                            style={{
+                                height: "100%",
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            <div
+                                className="admin_info"
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "flex-end",
+                                    flexDirection: "column",
+                                    height: "100%",
+                                    marginRight: "10px",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                <span style={{ lineHeight: "initial" }}>{admin_info?.admin_name}</span>
+                                <span style={{ lineHeight: "initial" }}>
+                                    编号: {admin_info?.id}
+                                </span>
+                            </div>
+                            <Avatar
+                                style={{
+                                    color: "#fff",
+                                    fontWeight: "bold",
+                                    backgroundColor: "#0094ff",
+                                }}
+                                size="large"
+                            >
+                                {admin_info.admin_name[0]}
+                            </Avatar>
+                        </div>
+                    </StyleHeader>
+                </Header>
                 <Content
                     style={{
-                        margin: "0 16px",
+                        margin: "16px 16px 0",
                     }}
                 >
-                    <Breadcrumb
-                        style={{
-                            margin: "16px 0",
-                        }}
-                    >
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
                     <div
                         style={{
-                            padding: 24,
-                            minHeight: 545,
+                            minHeight: 600,
                             background: colorBgContainer,
                         }}
                     >
@@ -136,6 +218,7 @@ export default function MArticle() {
                 <Footer
                     style={{
                         textAlign: "center",
+                        padding: "10px 50px"
                     }}
                 >
                     <p>All right is preserved by Kkuil</p>
@@ -145,3 +228,13 @@ export default function MArticle() {
         </Layout>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        admin_info: state.admin.admin
+    }
+}
+
+export default connect(mapStateToProps, {
+    modify
+})(MArticle)
