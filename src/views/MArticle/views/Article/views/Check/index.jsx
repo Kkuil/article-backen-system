@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Input, message, Select } from "antd"
 import { connect } from "react-redux"
 
-import { modify } from "@/store/modules/check_article"
+import { modify_search } from "@/store/modules/check_article"
 
 import { GetCheckArticles } from "@/api/check_article"
 
@@ -29,7 +29,7 @@ const CheckList = styled.div`
 `
 
 const { Search } = Input
-function Check({ admin, check_article, modify }) {
+function Check({ admin, check_article, modify_search }) {
     const navigateTo = useNavigate()
     const check = useRef()
     // const [sortType, setSortType] = useState("article_id")
@@ -54,7 +54,7 @@ function Check({ admin, check_article, modify }) {
                     navigateTo("/mArticle/main")
                 })
             }
-            modify({
+            modify_search({
                 articles: data.data,
                 total: data.total
             })
@@ -74,7 +74,7 @@ function Check({ admin, check_article, modify }) {
                 navigateTo("/mArticle/main")
             })
         }
-        modify({
+        modify_search({
             searchValue: value,
             articles: data.data,
             total: data.total
@@ -90,29 +90,6 @@ function Check({ admin, check_article, modify }) {
                     size="large"
                     onSearch={search}
                 />
-                {/* 排序方式 */}
-                {/* <div className="sort">
-                    <span>排序方式：</span>
-                    <Select
-                        defaultValue="id"
-                        style={{
-                            width: 110,
-                        }}
-                        options={[
-                            {
-                                value: "article_id",
-                                label: "id",
-                            },
-                            {
-                                value: "username",
-                                label: "username",
-                            }
-                        ]}
-                        onChange={(value) => {
-                            setSortType(value)
-                        }}
-                    />
-                </div> */}
                 {/* 限制条数 */}
                 <div
                     className="returnLimit"
@@ -154,7 +131,7 @@ function Check({ admin, check_article, modify }) {
                                     navigateTo("/mArticle/main")
                                 })
                             }
-                            modify({
+                            modify_search({
                                 articles: data.data,
                                 total: data.total,
                                 limit: +value
@@ -165,8 +142,8 @@ function Check({ admin, check_article, modify }) {
             </StyleSearch>
             <CheckList className="check_list">
                 <Table data={{
-                    articles: check_article.articles,
-                    total: check_article.total
+                    articles: check_article.search.articles,
+                    total: check_article.search.total
                 }} />
             </CheckList>
         </div>
@@ -174,15 +151,14 @@ function Check({ admin, check_article, modify }) {
 }
 
 const mapStateToProps = state => {
-    console.log(state)
     return {
         admin: state.admin.admin,
-        check_article: state.check_article.check_article
+        check_article: state.check_article
     }
 }
 
 const mapDispatchToProps = {
-    modify
+    modify_search
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Check)

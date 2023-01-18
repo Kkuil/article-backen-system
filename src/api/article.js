@@ -1,8 +1,9 @@
 import request from "@/utils/request"
 
-export const GetCheckArticles = async ({ searchValue = "", limit = 10, offset = 0, privilege }) => {
+// 获取全部文章
+export const GetArticles = async ({ searchValue="", limit=10, offset=0, privilege }) => {
     const { data } = await request({
-        url: "/check_article/search",
+        url: "/article/pri_find",
         method: "GET",
         params: {
             searchValue,
@@ -16,11 +17,12 @@ export const GetCheckArticles = async ({ searchValue = "", limit = 10, offset = 
     return data
 }
 
-export const PassCheck = async (article_id, privilege) => {
+// 上推荐
+export const Recommend = async ({ article_id, privilege }) => {
     const { data } = await request({
-        url: "/check_article/pass",
-        method: "delete",
-        params: {
+        url: "/article/recommend",
+        method: "POST",
+        data: {
             article_id
         },
         headers: {

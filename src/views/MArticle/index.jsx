@@ -92,7 +92,7 @@ function MArticle({ admin_info, modify }) {
     // 监听页面尺寸变化
     useEffect(() => {
         window.onresize = _.throttle(function (e) {
-            if (e.target.outerWidth <= 750) {
+            if (e.target.outerWidth <= 1000) {
                 setCollapsed(true)
             } else {
                 setCollapsed(false)

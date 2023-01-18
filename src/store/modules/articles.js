@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const check_article = createSlice({
-    name: "check_article",
+const articles = createSlice({
+    name: "articles",
     initialState: {
         search: {
             articles: [],
@@ -10,26 +10,30 @@ const check_article = createSlice({
             offset: 0,
             total: 0
         },
-        checking_article: {
+        observing_article: {
             article: {
                 article_id: "666",
-                title: "xxx",
                 username: "Kkuil",
+                title: "xxx",
                 content: "xxx",
-                upload_time: "1970年1月1日 08:00:00"
+                publish_time: "1970年1月1日 08:00:00",
+                status: "xxx",
+                views: 0,
+                like: 0,
+                comments: 0
             },
-            isChecking: false
+            isObservation: false
         }
     },
     reducers: {
         modify_search(state, actions) {
+            console.log(actions.payload)
             state.search = {
                 ...state.search,
                 ...actions.payload
             }
         },
-        modify_checking(state, actions) {
-            console.log(actions)
+        modify_observing(state, actions) {
             state.checking_article = {
                 ...state.checking_article,
                 ...actions
@@ -38,5 +42,5 @@ const check_article = createSlice({
     }
 })
 
-export default check_article.reducer
-export const { modify_search, modify_checking } = check_article.actions
+export default articles.reducer
+export const { modify_search, modify_observing } = articles.actions

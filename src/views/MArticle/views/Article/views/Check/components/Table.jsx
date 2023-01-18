@@ -1,10 +1,12 @@
 import { Table, Button, Tooltip, Tag, message } from "antd"
 import React, { useState } from "react"
 import { connect } from "react-redux"
-import { modify } from "@/store/modules/check_article"
+import { modify_search } from "@/store/modules/check_article"
+import { useDispatch } from "react-redux"
 
 import { GetCheckArticles } from "@/api/check_article"
 import { useNavigate } from "react-router-dom"
+import CheckModel from "./CheckModel"
 
 const columns = [
     {
@@ -88,18 +90,30 @@ const columns = [
         ellipsis: {
             showTitle: false,
         },
-        render: () => (
-            <Tooltip placement="topLeft">
-                <Button type="primary">进入审核</Button>
-            </Tooltip>
-        ),
+        render: (_, info) => {
+            const dispatch = useDispatch()
+            console.log(_)
+            return (
+                <Tooltip placement="topLeft">
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            dispatch({
+                                type: "check_article/modify_checking",
+                                article: info,
+                                isChecking: true
+                            })
+                        }}
+                    >进入审核</Button>
+                </Tooltip>
+            )
+        },
     }
 ]
-function App({ data, check_article, admin, modify }) {
+function App({ data, check_article, admin, modify_search }) {
     const navigateTo = useNavigate()
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
     const onSelectChange = (newSelectedRowKeys) => {
-        console.log("selectedRowKeys changed: ", newSelectedRowKeys)
         setSelectedRowKeys(newSelectedRowKeys)
     }
     const rowSelection = {
@@ -112,49 +126,56 @@ function App({ data, check_article, admin, modify }) {
         ],
     }
     return (
-        <Table
-            rowSelection={rowSelection}
-            columns={columns}
-            dataSource={data.articles}
-            pagination={{
-                pageSize: check_article.limit,
-                position: "bottomCenter",
-                defaultCurrent: 1,
-                total: data.total,
-                onChange: async (page, pageSize) => {
-                    const { data, status, msg } = await GetCheckArticles({
-                        searchValue: check_article.searchValue,
-                        limit: check_article.limit,
-                        offset: (page - 1) * pageSize,
-                        privilege: admin.privilege
-                    })
-                    if(status === 400) {
-                        message.error(msg)
-                    } else if(status === 150) {
-                        message.error(msg, 3, () => {
-                            navigateTo("/mArticle/main")
+        <>
+            <Table
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={data.articles}
+                pagination={{
+                    pageSize: check_article.search.limit,
+                    position: "bottomCenter",
+                    defaultCurrent: 1,
+                    total: data.total,
+                    onChange: async (page, pageSize) => {
+                        const { data, status, msg } = await GetCheckArticles({
+                            searchValue: check_article.search.searchValue,
+                            limit: check_article.search.limit,
+                            offset: (page - 1) * pageSize,
+                            privilege: admin.privilege
+                        })
+                        if (status === 400) {
+                            message.error(msg)
+                        } else if (status === 150) {
+                            message.error(msg, 3, () => {
+                                navigateTo("/mArticle/main")
+                            })
+                        }
+                        modify_search({
+                            offset: (page - 1) * pageSize,
+                            articles: data.data,
+                            total: data.total
                         })
                     }
-                    modify({
-                        offset: (page - 1) * pageSize,
-                        articles: data.data,
-                        total: data.total
-                    })
-                }
-            }}
-        />
+                }}
+            />
+            {
+                check_article.checking_article.isChecking
+                &&
+                <CheckModel article={check_article.checking_article.article} />
+            }
+        </>
     )
 }
 
-const mapStateToProps = ({ check_article: { check_article }, admin: { admin } }) => {
+const mapStateToProps = ({ check_article, admin: { admin } }) => {
     return {
         check_article,
-        admin
+        admin,
     }
 }
 
 const mapDispatchToProps = {
-    modify
+    modify_search
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
