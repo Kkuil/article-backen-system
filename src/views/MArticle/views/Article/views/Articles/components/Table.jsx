@@ -2,15 +2,12 @@ import { Table, Button, Tooltip, Tag, message } from "antd"
 import React from "react"
 import { connect } from "react-redux"
 
+import ObserveModel from "./ObserveModel"
 import { modify_search } from "@/store/modules/articles"
-
 import { GetArticles } from "@/api/article"
-
 import { Recommend } from "@/api/article"
 
-// import { useNavigate } from "react-router-dom"
-// import OutlineModel from "./OutlineModel"
-
+import { useDispatch } from "react-redux"
 const getColumns = (admin, search, modify_search) => {
     return [
         {
@@ -152,16 +149,26 @@ const getColumns = (admin, search, modify_search) => {
             align: "center",
             fixed: "right",
             width: 120,
-            render: () => {
+            render: (_, article) => {
+                const dispatch = useDispatch()
                 return (
-                    <Button type="primary">查看详情</Button>
+                    <Button
+                        type="primary"
+                        onClick={() => {
+                            dispatch({
+                                type: "articles/modify_observing",
+                                isObserving: true,
+                                article
+                            })
+                        }}
+                    >查看详情</Button>
                 )
             },
         },
     ]
 }
 
-function App({ data: { articles, total }, admin, search, modify_search }) {
+function App({ data: { articles, total }, admin, search, observing_article, modify_search }) {
     // const navigateTo = useNavigate()
     return (
         <>
@@ -191,19 +198,20 @@ function App({ data: { articles, total }, admin, search, modify_search }) {
                     x: 1000,
                 }}
             />
-            {/* {
-                checking_article.isChecking
+            {
+                observing_article.isObserving
                 &&
-                <OutlineModel article={checking_article.article} />
-            } */}
+                <ObserveModel article={observing_article.article} />
+            }
         </>
     )
 }
 
-const mapStateToProps = ({ admin: { admin }, articles: { search } }) => {
+const mapStateToProps = ({ admin: { admin }, articles: { search, observing_article } }) => {
     return {
         admin,
-        search
+        search,
+        observing_article
     }
 }
 

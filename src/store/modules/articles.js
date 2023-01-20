@@ -22,20 +22,19 @@ const articles = createSlice({
                 like: 0,
                 comments: 0
             },
-            isObservation: false
+            isObserving: false
         }
     },
     reducers: {
         modify_search(state, actions) {
-            console.log(actions.payload)
             state.search = {
                 ...state.search,
                 ...actions.payload
             }
         },
         modify_observing(state, actions) {
-            state.checking_article = {
-                ...state.checking_article,
+            state.observing_article = {
+                ...state.observing_article,
                 ...actions
             }
         }

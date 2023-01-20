@@ -61,7 +61,7 @@ function CheckModel({ article, check_article, admin }) {
                     <span>发布内容：</span>
                     <p>{article.content}</p>
                 </div>
-                <div className="username">
+                <div className="upload_time">
                     <span>上传时间：</span>
                     <span>{article.upload_time}</span>
                 </div>

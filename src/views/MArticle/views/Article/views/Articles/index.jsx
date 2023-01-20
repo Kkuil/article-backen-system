@@ -5,9 +5,7 @@ import { useDispatch } from "react-redux"
 import { connect } from "react-redux"
 
 import { modify_search } from "@/store/modules/articles"
-
 import { GetArticles } from "@/api/article"
-
 import Table from "./components/Table"
 
 const StyleSearch = styled.div`
@@ -28,7 +26,6 @@ const searchI = async (value, admin, modify_search) => {
         searchValue: value,
         privilege: admin.privilege
     })
-    console.log(articles)
     modify_search({
         articles,
         total,

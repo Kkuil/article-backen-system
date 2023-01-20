@@ -11,6 +11,8 @@
     "axios": "^1.2.2",
     "crypto-js": "^4.1.1",
     "css-loader": "^6.7.3",
+    "echarts": "^5.4.1",
+    "jquery": "^3.6.3",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
     "lodash": "^4.17.21",
