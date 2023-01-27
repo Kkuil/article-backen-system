@@ -64,9 +64,7 @@ const getColumns = (admin, search, modify_search) => {
                 showTitle: false,
             },
             render: (content) => (
-                <Tooltip placement="topLeft" title={content}>
-                    {content}
-                </Tooltip>
+                <>{content}</>
             ),
         },
         {

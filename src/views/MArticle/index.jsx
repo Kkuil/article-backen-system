@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useLoaderData, Outlet, useLocation } from "react-router-dom"
-import { Layout, Menu, theme, Avatar } from "antd"
+import { Layout, Menu, theme, Avatar, Dropdown } from "antd"
 import { HeatMapOutlined, UserOutlined, UserSwitchOutlined, EditOutlined } from "@ant-design/icons"
 import { connect } from "react-redux"
 import styled from "styled-components"
@@ -9,6 +9,7 @@ import _ from "lodash"
 import { modify } from "@/store/modules/admin"
 
 const StyleHeader = styled.div`
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -63,13 +64,43 @@ const items = [
                 key: "/user/users"
             },
         ]
-    }
+    },
+    {
+        label: "活动管理",
+        key: "/activity",
+        icon: <UserOutlined />,
+        children: [
+            {
+                label: "活动概览",
+                key: "/activity/outline"
+            },
+        ]
+    },
 ]
+
+const getDropItems = (navigateTo) => {
+    return [
+        {
+            key: "logout",
+            label: <span
+                onClick={() => {
+                    const ADMIN_TOKEN = localStorage.getItem("ADMIN_TOKEN")
+                    ADMIN_TOKEN && localStorage.removeItem("ADMIN_TOKEN")
+                    navigateTo("/login")
+                }}
+            >
+                <i className="iconfont icon-dingbudaohang-zhangh"></i>
+                <span>退出登录</span>
+            </span>
+        }
+    ]
+}
 function MArticle({ admin_info, modify }) {
     const navigateTo = useNavigate()
     const { pathname } = useLocation()
     const { status, admin } = useLoaderData()
     const [collapsed, setCollapsed] = useState(false)
+    const [wlcWrd, setWlcWrd] = useState("上午好")
     // 默认选中的项
     const [defaultKey] = useState("/" + pathname.split("/").slice(2).join("/"))
     // 默认展开的项
@@ -102,6 +133,16 @@ function MArticle({ admin_info, modify }) {
             window.onresize = null
         }
     }, [])
+    // 修改问候语
+    useEffect(() => {
+        const cur_hour = new Date().getHours()
+        if(cur_hour <= 6) setWlcWrd("凌晨好")
+        else if(cur_hour <= 11) setWlcWrd("上午好")
+        else if(cur_hour <= 13) setWlcWrd("中午好")
+        else if(cur_hour <= 17) setWlcWrd("下午好")
+        else if(cur_hour <= 21) setWlcWrd("晚上好")
+        else setWlcWrd("夜深了")
+    }, [wlcWrd])
     const {
         token: { colorBgContainer },
     } = theme.useToken()
@@ -142,11 +183,15 @@ function MArticle({ admin_info, modify }) {
                 <Menu
                     theme="dark"
                     defaultSelectedKeys={[defaultKey]}
-                    // selectedKeys={[defaultKey]}
-                    // openKeys={[openKey]}
                     defaultOpenKeys={[openKey]}
                     mode="inline"
-                    items={items}
+                    items={((privilege) => {
+                        if (!(privilege === "sa_wwq5714806")) {
+                            return items.slice(0, 2)
+                        } else {
+                            return items
+                        }
+                    })(admin_info.privilege)}
                     onSelect={selected}
                     onClick={({ key }) => {
                         console.log(key)
@@ -161,8 +206,20 @@ function MArticle({ admin_info, modify }) {
                     }}
                 >
                     <StyleHeader>
-                        <div className="left">123</div>
-                        <div className="center">123</div>
+                        <div className="left">
+                            <h3>
+                                {
+                                    admin_info.privilege === "sa_wwq5714806"
+                                        ? "超级管理员"
+                                        : admin_info.privilege === "ma_wwq5714806"
+                                            ? "中级管理员"
+                                            : "管理员"
+                                }
+                            </h3>
+                        </div>
+                        <div className="center">
+                            <h3>{ wlcWrd }</h3>
+                        </div>
                         <div
                             className="right"
                             style={{
@@ -198,6 +255,22 @@ function MArticle({ admin_info, modify }) {
                             >
                                 {admin_info.admin_name[0]}
                             </Avatar>
+                            <Dropdown
+                                menu={{ items: getDropItems(navigateTo) }}
+                                destroyPopupOnHide={true}
+                            >
+                                <i
+                                    className="iconfont icon-arrow-down-filling"
+                                    style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        right: 5,
+                                        fontSize: 70,
+                                        color: "transparent",
+                                        cursor: "pointer"
+                                    }}
+                                ></i>
+                            </Dropdown>
                         </div>
                     </StyleHeader>
                 </Header>
@@ -229,9 +302,9 @@ function MArticle({ admin_info, modify }) {
     )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ admin: { admin } }) => {
     return {
-        admin_info: state.admin.admin
+        admin_info: admin
     }
 }
 

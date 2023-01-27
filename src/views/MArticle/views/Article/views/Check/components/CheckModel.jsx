@@ -15,25 +15,38 @@ const CheckingModel = styled.div`
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.6);
     .box {
-        position: relative;
         width: 500px;
-        height: 450px;
         border-radius: 20px;
         background-color: #fff;
         padding: 20px;
+        overflow: hidden;
         > div {
             display: flex;
-            align-items: center;
             height: 45px;
             font-size: 16px;
             font-weight: bold;
         }
         .kits {
-            position: absolute;
-            bottom: 20px;
+            z-index: 999;
             width: 100%;
+            height: 60px;
             button {
                 margin: 0 10px;
+            }
+        }
+        .title {
+            .words {
+                width: 75px;
+            }
+        }
+        .content {
+            height: 320px;
+            .words {
+                width: 200px;
+            }
+            p {
+                height: 300px;
+                overflow: scroll;
             }
         }
     }
@@ -54,11 +67,11 @@ function CheckModel({ article, check_article, admin }) {
                     <span>{article.article_id}</span>
                 </div>
                 <div className="title">
-                    <span>标题：</span>
+                    <span className="words">标题：</span>
                     <span>{article.title}</span>
                 </div>
                 <div className="content">
-                    <span>发布内容：</span>
+                    <span className="words">发布内容：</span>
                     <p>{article.content}</p>
                 </div>
                 <div className="upload_time">
@@ -76,7 +89,7 @@ function CheckModel({ article, check_article, admin }) {
                         type="primary"
                         onClick={async () => {
                             const { status, msg } = await PassCheck(article.article_id, admin.privilege)
-                            if(status === 110) {
+                            if (status === 110) {
                                 message.error(msg, 3, () => {
                                     navigateTo("/main")
                                 })

@@ -57,9 +57,7 @@ const columns = [
             showTitle: false,
         },
         render: (content) => (
-            <Tooltip placement="topLeft" title={content}>
-                {content}
-            </Tooltip>
+            <>{content}</>
         ),
     },
     {

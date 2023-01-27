@@ -15,13 +15,11 @@ const Observing = styled.div`
     .box {
         position: relative;
         width: 500px;
-        height: 450px;
         border-radius: 20px;
         background-color: #fff;
         padding: 20px;
         > div {
             display: flex;
-            align-items: center;
             height: 40px;
             font-size: 16px;
             font-weight: bold;
@@ -33,11 +31,19 @@ const Observing = styled.div`
             white-space: nowrap;
         }
         .content {
+            height: auto;
+            min-height: 40px;
             max-height: 100px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
+            overflow: scroll;
+            .words {
+                width: 20%;
+                position: sticky;
+                left: 0;
+                top: 0;
+            }
+            p {
+                width: 80%;
+            }
         }
         .kits {
             height: 40px;
@@ -63,7 +69,7 @@ export default function ObserveModel({ article }) {
                     <span>{article.title}</span>
                 </div>
                 <div className="content">
-                    <span>发布内容：</span>
+                    <div className="words">发布内容：</div>
                     <p>{article.content}</p>
                 </div>
                 <div className="publish_time">
