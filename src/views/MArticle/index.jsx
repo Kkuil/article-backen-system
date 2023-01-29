@@ -72,7 +72,7 @@ const items = [
         children: [
             {
                 label: "活动概览",
-                key: "/activity/outline"
+                key: "/activity/activities"
             },
         ]
     },

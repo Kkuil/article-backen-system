@@ -58,11 +58,11 @@ export default createBrowserRouter([
             },
             {
                 path: "activity",
-                element: <Lazy path="MArticles/views/Activity"/>,
+                element: <Lazy path="MArticle/views/Activity"/>,
                 children: [
                     {
                         path: "activities",
-                        element: <Lazy path="MArticles/views/Activity/views/Outline" />
+                        element: <Lazy path="MArticle/views/Activity/views/Outline" />
                     }
                 ]
             }

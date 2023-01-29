@@ -20,3 +20,24 @@ export const auth = async () => {
     })
     return data
 }
+
+// 获取全部管员
+export const getAllAdmins = async () => {
+    const { data } = await request({
+        url: "/admin/getAllAdmins",
+        method: "GET",
+    })
+    return data
+}
+
+// 删除管理员
+export const delAdmin = async (id) => {
+    const { data } = await request({
+        url: "/admin/delAdmin",
+        method: "DELETE",
+        params: {
+            id
+        }
+    })
+    return data
+}
