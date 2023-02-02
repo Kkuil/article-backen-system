@@ -1,10 +1,10 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3861602 */
-  src: url("//at.alicdn.com/t/c/font_3861602_y633l7sgll.woff2?t=1674896827292")
+  src: url("//at.alicdn.com/t/c/font_3861602_97j765splfw.woff2?t=1675235196316")
       format("woff2"),
-    url("//at.alicdn.com/t/c/font_3861602_y633l7sgll.woff?t=1674896827292")
+    url("//at.alicdn.com/t/c/font_3861602_97j765splfw.woff?t=1675235196316")
       format("woff"),
-    url("//at.alicdn.com/t/c/font_3861602_y633l7sgll.ttf?t=1674896827292")
+    url("//at.alicdn.com/t/c/font_3861602_97j765splfw.ttf?t=1675235196316")
       format("truetype");
 }
 
@@ -14,6 +14,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-activity:before {
+  content: "\e6de";
 }
 
 .icon-cuowu:before {

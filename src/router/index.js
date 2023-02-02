@@ -63,6 +63,10 @@ export default createBrowserRouter([
                     {
                         path: "activities",
                         element: <Lazy path="MArticle/views/Activity/views/Outline" />
+                    },
+                    {
+                        path: "publish",
+                        element: <Lazy path="MArticle/views/Activity/views/Publish" />
                     }
                 ]
             }

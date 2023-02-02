@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useLoaderData, Outlet, useLocation } from "react-router-dom"
-import { Layout, Menu, theme, Avatar, Dropdown } from "antd"
-import { HeatMapOutlined, UserOutlined, UserSwitchOutlined, EditOutlined } from "@ant-design/icons"
+import { Layout, Menu, Avatar, Dropdown } from "antd"
 import { connect } from "react-redux"
 import styled from "styled-components"
 import _ from "lodash"
 
 import { modify } from "@/store/modules/admin"
+
+import { items } from "./mArticle.config"
 
 const StyleHeader = styled.div`
     position: relative;
@@ -18,65 +19,6 @@ const StyleHeader = styled.div`
 `
 
 const { Header, Content, Footer, Sider } = Layout
-const items = [
-    {
-        label: "首页",
-        key: "/main",
-        icon: <HeatMapOutlined />
-    },
-    {
-        label: "文章管理",
-        key: "/article",
-        icon: <EditOutlined />,
-        children: [
-            {
-                label: "待审文章",
-                key: "/article/check"
-            },
-            {
-                label: "文章概览",
-                key: "/article/articles"
-            },
-        ]
-    },
-    {
-        label: "管理员管理",
-        key: "/admin",
-        icon: <UserSwitchOutlined />,
-        children: [
-            {
-                label: "权限管理",
-                key: "/admin/right"
-            },
-            {
-                label: "成员管理",
-                key: "/admin/members"
-            }
-        ]
-    },
-    {
-        label: "用户管理",
-        key: "/user",
-        icon: <UserOutlined />,
-        children: [
-            {
-                label: "用户概览",
-                key: "/user/users"
-            },
-        ]
-    },
-    {
-        label: "活动管理",
-        key: "/activity",
-        icon: <UserOutlined />,
-        children: [
-            {
-                label: "活动概览",
-                key: "/activity/activities"
-            },
-        ]
-    },
-]
 
 const getDropItems = (navigateTo) => {
     return [
@@ -143,9 +85,6 @@ function MArticle({ admin_info, modify }) {
         else if(cur_hour <= 21) setWlcWrd("晚上好")
         else setWlcWrd("夜深了")
     }, [wlcWrd])
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken()
     function selected({ key }) {
         navigateTo(`/mArticle${key}`)
     }
@@ -187,7 +126,7 @@ function MArticle({ admin_info, modify }) {
                     mode="inline"
                     items={((privilege) => {
                         if (!(privilege === "sa_wwq5714806")) {
-                            return items.slice(0, 2)
+                            return items.slice(0, 3)
                         } else {
                             return items
                         }
@@ -202,7 +141,10 @@ function MArticle({ admin_info, modify }) {
                 <Header
                     style={{
                         padding: 0,
-                        background: colorBgContainer,
+                        backgroundColor: "#fff",
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 999
                     }}
                 >
                     <StyleHeader>
@@ -282,7 +224,7 @@ function MArticle({ admin_info, modify }) {
                     <div
                         style={{
                             minHeight: 600,
-                            background: colorBgContainer,
+                            background: "#fff",
                         }}
                     >
                         <Outlet></Outlet>
