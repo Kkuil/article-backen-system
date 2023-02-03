@@ -23,13 +23,13 @@ const users = createSlice({
     },
     reducers: {
         modify_search(state, actions) {
-            console.log(actions)
             state.search = {
                 ...state.search,
                 ...actions.payload
             }
         },
         modify_observing(state, actions) {
+            console.log(actions)
             state.observing_user = {
                 ...state.observing_user,
                 ...actions
