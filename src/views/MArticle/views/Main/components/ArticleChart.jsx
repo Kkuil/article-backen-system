@@ -104,7 +104,7 @@ export default function ArticleChart() {
             myChart.setOption({
                 series: [
                     {
-                        data: data
+                        data
                     }
                 ]
             })
